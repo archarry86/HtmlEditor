@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html class="controls">
+<body class="controls">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.0/jquery.min.js"></script>
+
+<script>
+
+$(document).ready(function(){
+$('#html > div').click(function(){
+window.puthtml();
+});
+$('#html > td').click(function(){
+window.puthtml();
+});
+}
+);
+
+function puthtml(){
+
+
+if(window.myelement == null)
+return; 
+
+var id = window.buttonselected.id;
+var jqobj = $(window.myelement);
+debugger;
+
+if(id =="table")
+{
+
+jqobj.append(window._Table().getHtmlBody());
+return;
+}
+
+
+if(id =="div"  )
+{
+jqobj.append(window._Div().getHtmlBody());
+return;
+}
+
+if(id =="input")
+{
+jqobj.append(window._inputtext().getHtmlBody());
+return;
+}
+
+}
+
+
+
+var _Div =function()
+{
+var f = {};
+
+f.getHtmlBody= function(){
+
+return "<div>NUEVO CONTENEDOR <BR></div>"
+}
+
+return f;
+}
+;
+
+var _Table =function()
+{
+
+var f = {};
+
+f.getHtmlBody= function(){
+
+return "<table><tr><th>c1R1</th><th>c2R1</th><th>c3R1</th></tr><tr><td>c1R1</td><td>c2R1</td><td>c3R1</td></tr></table>"
+}
+
+return f;
+}
+;
+
+var _inputtext =function()
+{
+var f = {};
+
+f.getHtmlBody= function(){
+
+return "<input type='text' id='name'  required       minlength='0' maxlength='8' size='10'>";
+}
+
+return f;
+};
+
+
+
+window.buttonselected = null;
+
+
+window.myelement = null;
+
+function bigImg(x) {
+  x.style.height = "64px";
+  x.style.width = "64px";
+}
+
+function normalImg(x) {
+  x.style.height = "32px";
+  x.style.width = "32px";
+}
+function divover(x) {
+
+if($(x).attr("class") == "controls"){
+return;
+}
+ 
+ try{
+  divout($(x).parent()[0]);
+ }
+ catch(e){
+ }
+
+
+ x.style.border = "thick solid #FF0000";
+  window.myelement = x;
+}
+
+function divout(x) {
+  x.style.border = "thick solid #FFFFFF";
+  
+  divover($(x).parent()[0]);
+}
+
+function btnclick(btn){
+if(window.buttonselected != null)
+window.buttonselected.style.backgroundColor ="blue";
+
+btn.style.backgroundColor ="green";
+window.buttonselected = btn;
+
+}
+
+</script>
+<div id="controls" class="controls" style="float:left;width:40%">
+<div>
+<button id="table" onclick="btnclick(this)" style="background-color:blue">Table</button><br />
+<button id="div"   onclick="btnclick(this)" style="background-color:blue">Div</button><br />
+<button id="input" onclick="btnclick(this)" style="background-color:blue">input text</button><br />
+</div>
+
+</div>
+<div id="html" class="controls" style="float:left;width:40%">
+
+<div onmouseenter="divover(this)" onmouseleave="divout(this)">
+div1
+
+<div onmouseenter="divover(this)" onmouseleave="divout(this)">
+div1 sub div
+</div>
+
+</div>
+
+<div onmouseenter="divover(this)" onmouseleave="divout(this)">
+div2<br><br><br><br><br>
+
+<div onmouseenter="divover(this)" onmouseleave="divout(this)">
+div2 sub div
+</div>
+
+</div>
+
+</div>
+
+<div class="controls" style="clear:both">
+
+</div>
+
+</body>
+</html>
