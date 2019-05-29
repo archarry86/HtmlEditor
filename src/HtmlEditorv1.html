@@ -6,12 +6,44 @@
 <script>
 
 $(document).ready(function(){
-$('#html > div').click(function(){
+
+var index = 0;
+
+$('#html *').click(function(){
+var target = $(this);
+if(target.is( "div" )||target.is( "table" )){
+
 window.puthtml();
+} 
+
+
 });
-$('#html > td').click(function(){
-window.puthtml();
+
+
+$('#html *').mouseenter(function(){
+//console.log('mouseneter '+index+" "+$(this).html());
+window.divover($(this)[0]);
+index++;
+}).mouseleave(function(){
+//console.log('mouseleave '+index+" "+$(this).html());
+window.divout($(this)[0]);
+index++;
 });
+
+//$('#html *')
+
+
+
+//$('#html *').mouseover(function() {
+//
+//   window.divover($(this)[0]);
+//  })
+//  .mouseout(function() {
+//   window.divout($(this)[0]);
+//  });
+ 
+
+
 }
 );
 
@@ -21,14 +53,27 @@ function puthtml(){
 if(window.myelement == null)
 return; 
 
+if(window.buttonselected == null)
+return; 
+
 var id = window.buttonselected.id;
 var jqobj = $(window.myelement);
-debugger;
+//debugger;
 
 if(id =="table")
 {
 
 jqobj.append(window._Table().getHtmlBody());
+jqobj.last().mouseenter(function(){
+//console.log('mouseneter '+index+" "+$(this).html());
+window.divover($(this)[0]);
+
+}).mouseleave(function(){
+//console.log('mouseleave '+index+" "+$(this).html());
+window.divout($(this)[0]);
+
+});
+
 return;
 }
 
@@ -36,12 +81,35 @@ return;
 if(id =="div"  )
 {
 jqobj.append(window._Div().getHtmlBody());
+
+
+jqobj.last().mouseenter(function(){
+//console.log('mouseneter '+index+" "+$(this).html());
+window.divover($(this)[0]);
+index++;
+}).mouseleave(function(){
+//console.log('mouseleave '+index+" "+$(this).html());
+window.divout($(this)[0]);
+index++;
+});
+
 return;
 }
 
 if(id =="input")
 {
 jqobj.append(window._inputtext().getHtmlBody());
+
+jqobj.last().mouseenter(function(){
+//console.log('mouseneter '+index+" "+$(this).html());
+window.divover($(this)[0]);
+
+}).mouseleave(function(){
+//console.log('mouseleave '+index+" "+$(this).html());
+window.divout($(this)[0]);
+
+});
+
 return;
 }
 
@@ -129,7 +197,7 @@ function divout(x) {
 
 function btnclick(btn){
 if(window.buttonselected != null)
-window.buttonselected.style.backgroundColor ="blue";
+window.buttonselected.style.backgroundColor ="";
 
 btn.style.backgroundColor ="green";
 window.buttonselected = btn;
@@ -139,27 +207,27 @@ window.buttonselected = btn;
 </script>
 <div id="controls" class="controls" style="float:left;width:40%">
 <div>
-<button id="table" onclick="btnclick(this)" style="background-color:blue">Table</button><br />
-<button id="div"   onclick="btnclick(this)" style="background-color:blue">Div</button><br />
-<button id="input" onclick="btnclick(this)" style="background-color:blue">input text</button><br />
+<button id="table" onclick="btnclick(this)" >Table</button><br />
+<button id="div"   onclick="btnclick(this)" >Div</button><br />
+<button id="input" onclick="btnclick(this)" >input text</button><br />
 </div>
 
 </div>
 <div id="html" class="controls" style="float:left;width:40%">
 
-<div onmouseenter="divover(this)" onmouseleave="divout(this)">
+<div   ><!-- onmouseenter="divover(this)" onmouseleave="divout(this)"-->
 div1
 
-<div onmouseenter="divover(this)" onmouseleave="divout(this)">
+<div >
 div1 sub div
 </div>
 
 </div>
 
-<div onmouseenter="divover(this)" onmouseleave="divout(this)">
+<div  >
 div2<br><br><br><br><br>
 
-<div onmouseenter="divover(this)" onmouseleave="divout(this)">
+<div  >
 div2 sub div
 </div>
 
