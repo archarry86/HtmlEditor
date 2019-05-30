@@ -4,12 +4,16 @@
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.0/jquery.min.js"></script>
 
 <script>
+var index = 0;
 
 $(document).ready(function(){
 
-var index = 0;
 
 $('#html *').click(function(){
+
+if(this != window.myelement)
+return;
+
 var target = $(this);
 if(target.is( "div" )||target.is( "table" )){
 
@@ -20,35 +24,56 @@ window.puthtml();
 });
 
 
-$('#html *').mouseenter(function(){
-//console.log('mouseneter '+index+" "+$(this).html());
-window.divover($(this)[0]);
-index++;
-}).mouseleave(function(){
-//console.log('mouseleave '+index+" "+$(this).html());
-window.divout($(this)[0]);
-index++;
-});
 
-//$('#html *')
-
-
-
-//$('#html *').mouseover(function() {
+//$('#html *').mouseenter(function(){
+////console.log('mouseneter '+index+" "+$(this).html());
+//window.divover($(this)[0]);
 //
-//   window.divover($(this)[0]);
-//  })
-//  .mouseout(function() {
-//   window.divout($(this)[0]);
-//  });
+//}).mouseleave(function(){
+////console.log('mouseleave '+index+" "+$(this).html());
+//window.divout($(this)[0]);
+//
+//
+//});
+
+window._html = $("#html")[0];
+
+$( "#html *" ).hover(
+  function() {
+  
+  if(window.myelement != null  && _html != window.myelement )
+   window.myelement.style.border   = "thin  solid #FFFFFF";
+   
+   window.myelement = this;
+   window.myelement.style.border   = "thin  solid #FF0000";
+     if(_html != $(  window.myelement).parent()[0])
+   $(  window.myelement).parent()[0].style.border   = "thin  solid #FFFFFF";
  
-
-
-}
+  }, function() {
+  
+    this.style.border   = "thin  solid #FFFFFF";
+	
+	window.myelement =$(this).parent()[0];//
+	
+	if( _html != window.myelement )
+	window.myelement.style.border   = "thin  solid #FF0000";
+  }
 );
 
-function puthtml(){
 
+$( "button" ).click(function(){
+
+if(window.buttonselected != null)
+window.buttonselected.style.backgroundColor ="";
+
+this.style.backgroundColor ="green";
+window.buttonselected = this;
+
+});
+
+});
+
+function puthtml(){
 
 if(window.myelement == null)
 return; 
@@ -64,16 +89,11 @@ if(id =="table")
 {
 
 jqobj.append(window._Table().getHtmlBody());
-jqobj.last().mouseenter(function(){
-//console.log('mouseneter '+index+" "+$(this).html());
-window.divover($(this)[0]);
 
-}).mouseleave(function(){
-//console.log('mouseleave '+index+" "+$(this).html());
-window.divout($(this)[0]);
-
-});
-
+window.tout=  window.setTimeout(function(){
+//debugger;
+Rebind(jqobj);
+},300 );
 return;
 }
 
@@ -82,16 +102,10 @@ if(id =="div"  )
 {
 jqobj.append(window._Div().getHtmlBody());
 
-
-jqobj.last().mouseenter(function(){
-//console.log('mouseneter '+index+" "+$(this).html());
-window.divover($(this)[0]);
-index++;
-}).mouseleave(function(){
-//console.log('mouseleave '+index+" "+$(this).html());
-window.divout($(this)[0]);
-index++;
-});
+window.tout=  window.setTimeout(function(){
+//debugger;
+Rebind(jqobj);
+}  ,300);
 
 return;
 }
@@ -100,18 +114,58 @@ if(id =="input")
 {
 jqobj.append(window._inputtext().getHtmlBody());
 
-jqobj.last().mouseenter(function(){
-//console.log('mouseneter '+index+" "+$(this).html());
-window.divover($(this)[0]);
-
-}).mouseleave(function(){
-//console.log('mouseleave '+index+" "+$(this).html());
-window.divout($(this)[0]);
-
-});
+window.tout=  window.setTimeout(function(){
+//debugger;
+Rebind(jqobj);
+},300 );
 
 return;
 }
+
+}
+
+function Rebind(obj){
+ clearTimeout(window.tout);
+ //debugger;
+
+$(obj.children().last()).click(function(){
+
+if(this != window.myelement)
+return;
+
+var target = $(this);
+if(target.is( "div" )||target.is( "table" )){
+
+window.puthtml();
+} 
+
+
+});
+
+
+$( obj.children().last()).hover(
+  function() {
+  
+  if(window.myelement != null  && _html != window.myelement )
+   window.myelement.style.border   = "thin  solid #FFFFFF";
+   
+   window.myelement = this;
+   window.myelement.style.border   = "thin  solid #FF0000";
+     if(_html != $(  window.myelement).parent()[0])
+   $(  window.myelement).parent()[0].style.border   = "thin  solid #FFFFFF";
+ 
+  }, function() {
+  
+    this.style.border   = "thin  solid #FFFFFF";
+	
+	window.myelement =$(this).parent()[0];//
+	
+	if( _html != window.myelement )
+	window.myelement.style.border   = "thin  solid #FF0000";
+  }
+);
+
+
 
 }
 
@@ -160,40 +214,9 @@ return f;
 
 window.buttonselected = null;
 
-
 window.myelement = null;
 
-function bigImg(x) {
-  x.style.height = "64px";
-  x.style.width = "64px";
-}
 
-function normalImg(x) {
-  x.style.height = "32px";
-  x.style.width = "32px";
-}
-function divover(x) {
-
-if($(x).attr("class") == "controls"){
-return;
-}
- 
- try{
-  divout($(x).parent()[0]);
- }
- catch(e){
- }
-
-
- x.style.border = "thick solid #FF0000";
-  window.myelement = x;
-}
-
-function divout(x) {
-  x.style.border = "thick solid #FFFFFF";
-  
-  divover($(x).parent()[0]);
-}
 
 function btnclick(btn){
 if(window.buttonselected != null)
@@ -205,15 +228,40 @@ window.buttonselected = btn;
 }
 
 </script>
+<style>
+.center {
+  margin: auto;
+  width: 60%;
+  border: 3px solid #73AD21;
+  padding: 10px;
+}
+
+.html {
+  border: 3px solid #7321AD;
+  padding: 10px;
+}
+
+
+
+button{
+ width: 300px;
+}
+
+</style>
 <div id="controls" class="controls" style="float:left;width:40%">
-<div>
-<button id="table" onclick="btnclick(this)" >Table</button><br />
-<button id="div"   onclick="btnclick(this)" >Div</button><br />
-<button id="input" onclick="btnclick(this)" >input text</button><br />
+
+
+<div class="center">
+<button id="table"  >Table</button><br />
+<button id="div"    >Div</button><br />
+<button id="input"  >input text</button><br />
 </div>
 
 </div>
-<div id="html" class="controls" style="float:left;width:40%">
+<div id="html" class="controls html" style="float:left;width:40%">
+<div id="main">
+
+
 
 <div   ><!-- onmouseenter="divover(this)" onmouseleave="divout(this)"-->
 div1
@@ -235,9 +283,29 @@ div2 sub div
 
 </div>
 
+<div id="test2">
+lllll2
+<div id="test">
+lllll
+</div>
+
+</div>
+
+<div id="test3">
+lllll2
+<div id="test4">
+lllll
+</div>
+
+</div>
+
+</div>
+
 <div class="controls" style="clear:both">
 
 </div>
+
+
 
 </body>
 </html>
