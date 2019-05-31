@@ -1,13 +1,36 @@
 <!DOCTYPE html>
-<html class="controls">
-<body class="controls">
+<html  >
+<body  >
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.0/jquery.min.js"></script>
 
 <script>
 var index = 0;
 
+var _click = 0;
+
+window.buttonselected = null;
+
+window.myelement = null;
+
+window.toedit = null;
+
+window.parentoedit = null;
+
+
 $(document).ready(function(){
 
+
+$(document).keypress(function(e) {
+  if(e.which == 127) {
+    // enter pressed
+	debugger;
+	if($(window.myelement).attr('id') != "main")
+	$(window.myelement).replaceWith( "");
+  }
+});
+
+
+window._html = $("#html")[0];
 
 $('#html *').click(function(){
 
@@ -18,6 +41,7 @@ var target = $(this);
 if(target.is( "div" )||target.is( "table" )){
 
 window.puthtml();
+
 } 
 
 
@@ -36,22 +60,32 @@ window.puthtml();
 //
 //});
 
-window._html = $("#html")[0];
+
 
 $( "#html *" ).hover(
   function() {
   
-  if(window.myelement != null  && _html != window.myelement )
-   window.myelement.style.border   = "thin  solid #FFFFFF";
+
+  
+   if(window.myelement != null  && _html != window.myelement )
+   window.myelement.style.border   = "";
+  
+     window.myelement = this;
+     window.myelement.style.border   = "thin  solid #FF0000";
+	 
+   //if(_html != $(window.myelement).parent()[0])
+   //$(  window.myelement).parent()[0].style.border   = "";
    
-   window.myelement = this;
-   window.myelement.style.border   = "thin  solid #FF0000";
-     if(_html != $(  window.myelement).parent()[0])
-   $(  window.myelement).parent()[0].style.border   = "thin  solid #FFFFFF";
+   $(window.myelement).parents().each(function(){
+    if(_html != this)
+	this.style.border   = "";
+   });
  
   }, function() {
   
-    this.style.border   = "thin  solid #FFFFFF";
+  
+  
+    this.style.border   = "";//"thin  solid #FFFFFF";
 	
 	window.myelement =$(this).parent()[0];//
 	
@@ -60,20 +94,143 @@ $( "#html *" ).hover(
   }
 );
 
+$( "#html *" ).dblclick(function() {
+ 
+  if(window.myelement == null || window.buttonselected  != null  ||  this != window.myelement){
+  return;
+  }
+  //debugger;
+  
+  window.toedit = $(window.myelement);
+  window.myelement = null;
+  window.toedit[0].style.border   = "thin  solid #0000FF";
+  $( "#htmledition" ).show();
+   $("#htmleditiontext" ).val( window.toedit[0].outerHTML);
+  if(  window.toedit.is("table") ){
+  console.log("table");
+  } else if(  window.toedit.is("div") ){
+   console.log("div "+window.toEditisContainer() );
+  }
+  else if(  window.toedit.is("input") ){
+  console.log("input" );
+  }
+  else if(  window.toedit.is("select") ){
+  console.log("select");
+  }
+  
+});
 
-$( "button" ).click(function(){
 
-if(window.buttonselected != null)
+
+
+$( ".togglecontrols" ).click(function(){
+ 
+if(window.buttonselected != null){
 window.buttonselected.style.backgroundColor ="";
+$(window.buttonselected).css("color","black");
+}
+
+
+if(window.buttonselected == this){
+window.buttonselected = null;
+$(window.buttonselected).css("color","black");
+return;
+}
+
 
 this.style.backgroundColor ="green";
 window.buttonselected = this;
+$(window.buttonselected).css("color","white");
 
 });
 
+
+$( "#htmleditionbtnsave" ).click(function() {
+
+  if(window.toedit == null || window.buttonselected  != null){
+  return;
+  }
+
+    console.log("save changes");
+    //window.toedit[0].outerHTML =$("#htmleditiontext" ).val();
+	window.parentoedit = window.toedit.parent();
+    window.toedit.replaceWith( $("#htmleditiontext" ).val() );
+    //window.toedit[0].style.border   = "";
+	
+    window.toedit = null;
+	window.myelement = null;
+   $( "#htmledition" ).hide();
+   $("#htmleditiontext" ).html("")
+   
+    window.tout2=  window.setTimeout(function(){
+    
+	debugger;
+	window.clearTimeout(window.tout2);
+	
+	
+    $('#html *').css("border","");
+
+	var aux = $('#html').html();
+    $('#html').html(aux);
+	
+	BindCoreFunctions('#html *');
+	
+    },300 );
+  
 });
+
+
+$( "#htmleditionbtncancel").click(function() {
+
+
+   
+    window.toedit[0].style.border   = "";
+    window.toedit = null;
+	window.myelement = null;
+   $( "#htmledition" ).hide();
+   $("#htmleditiontext" ).html("")
+  
+});
+
+$( "#htmleditionbtndelete").click(function() {
+   deleteselectedelement();
+});
+
+
+$( "#cleanhtml").click(function(){
+ $("#main" ).html("");
+
+});
+
+
+});
+
+function toEditisContainer(){
+
+var id = window.toedit.attr('id');
+return id!= undefined && id.indexOf('container')> -1;
+}
+
+function deleteselectedelement(){ if(window.toedit.attr('id') == "main"){
+	
+	
+		 $("#main" ).html("");
+	}
+else 
+    window.toedit.replaceWith( "");
+    //window.toedit[0].style.border   = "";
+	
+    window.toedit = null;
+	window.myelement = null;
+   $( "#htmledition" ).hide();
+   $("#htmleditiontext" ).html("");
+   
+   }
 
 function puthtml(){
+
+_click++;
+console.log(_click);
 
 if(window.myelement == null)
 return; 
@@ -81,82 +238,82 @@ return;
 if(window.buttonselected == null)
 return; 
 
-var id = window.buttonselected.id;
+var id = $(window.buttonselected).data("control");
 var jqobj = $(window.myelement);
 //debugger;
 
-if(id =="table")
-{
+window.index++;
 
-jqobj.append(window._Table().getHtmlBody());
+//debugger;
+
+var template = window[id];
+
+if(template!= undefined ){
+
+jqobj.append(template.getHtmlBody());
 
 window.tout=  window.setTimeout(function(){
 //debugger;
-Rebind(jqobj);
-},300 );
-return;
-}
 
+var aux = $('#html').html();
+$('#html').html(aux);
+	
 
-if(id =="div"  )
-{
-jqobj.append(window._Div().getHtmlBody());
+BindCoreFunctions('#html *');
 
-window.tout=  window.setTimeout(function(){
-//debugger;
-Rebind(jqobj);
-}  ,300);
-
-return;
-}
-
-if(id =="input")
-{
-jqobj.append(window._inputtext().getHtmlBody());
-
-window.tout=  window.setTimeout(function(){
-//debugger;
-Rebind(jqobj);
 },300 );
 
 return;
 }
+else{
+ alert('Template '+id+' no esta definido.');
+}
 
 }
 
-function Rebind(obj){
- clearTimeout(window.tout);
- //debugger;
 
-$(obj.children().last()).click(function(){
+
+
+
+function BindCoreFunctions(objecttobinbd){
+ 
+ 
+
+$(objecttobinbd).click(function(){
 
 if(this != window.myelement)
 return;
 
 var target = $(this);
-if(target.is( "div" )||target.is( "table" )){
+if(target.is( "div" )||target.is( "table" )||target.is( "td" )){
 
 window.puthtml();
 } 
-
-
 });
+//is table apply to all sub elements
 
-
-$( obj.children().last()).hover(
+$( objecttobinbd).hover(
   function() {
+  
+
   
   if(window.myelement != null  && _html != window.myelement )
    window.myelement.style.border   = "thin  solid #FFFFFF";
    
    window.myelement = this;
    window.myelement.style.border   = "thin  solid #FF0000";
-     if(_html != $(  window.myelement).parent()[0])
-   $(  window.myelement).parent()[0].style.border   = "thin  solid #FFFFFF";
+    
+   $(window.myelement).parents().each(function(){
+    if(_html != this)
+	this.style.border   = "";
+   });
+ 
+	
  
   }, function() {
   
-    this.style.border   = "thin  solid #FFFFFF";
+   
+    this.style.border   = "";//"thin  solid #FFFFFF";
 	
 	window.myelement =$(this).parent()[0];//
 	
@@ -166,69 +323,101 @@ $( obj.children().last()).hover(
 );
 
 
+$( objecttobinbd).dblclick(function() {
+
+   
+  if(window.myelement == null || window.buttonselected  != null  ||  this != window.myelement){
+  return;
+  }
+  //debugger;
+  
+  window.toedit = $(window.myelement);
+  window.myelement = null;
+  window.toedit[0].style.border   = "thin  solid #0000FF";
+  $( "#htmledition" ).show();
+   $("#htmleditiontext" ).val( window.toedit[0].outerHTML);
+  if(  window.toedit.is("table") ){
+  console.log("table");
+  } else if(  window.toedit.is("div") ){
+   console.log("div "+window.toEditisContainer() );
+  }
+  else if(  window.toedit.is("input") ){
+  console.log("input" );
+  }
+  else if(  window.toedit.is("select") ){
+  console.log("select");
+  }
+  
+   
+  
+});
 
 }
 
 
-
-var _Div =function()
+var _div =(function()
 {
 var f = {};
 
 f.getHtmlBody= function(){
 
-return "<div>NUEVO CONTENEDOR <BR></div>"
+return "<div id='div_"+window.index+"'></div>";
 }
 
 return f;
-}
-;
+})();
 
-var _Table =function()
+var _table =(function()
 {
 
 var f = {};
 
 f.getHtmlBody= function(){
 
-return "<table><tr><th>c1R1</th><th>c2R1</th><th>c3R1</th></tr><tr><td>c1R1</td><td>c2R1</td><td>c3R1</td></tr></table>"
+return "<table id='table_"+window.index+"'><tr><th>c1R1</th><th>c2R1</th><th>c3R1</th></tr><tr><td>c1R1</td><td>c2R1</td><td>c3R1</td></tr></table>";
 }
 
 return f;
-}
-;
+})();
 
-var _inputtext =function()
+var _inputtext =(function()
 {
 var f = {};
 
 f.getHtmlBody= function(){
 
-return "<input type='text' id='name'  required       minlength='0' maxlength='8' size='10'>";
+return "<div id=fieldcontainer"+window.index+"><label id='label_"+window.index+"' >Label "+window.index+"</label> <input  id='input_"+window.index+"' type='text' name='input_"+window.index+"'  required       minlength='0' maxlength='8' size='10'> <br /></div>";
 }
 
 return f;
-};
+})();
 
 
+var _inputselect =(function()
+{
+var f = {};
 
-window.buttonselected = null;
+f.getHtmlBody= function(){
 
-window.myelement = null;
-
-
-
-function btnclick(btn){
-if(window.buttonselected != null)
-window.buttonselected.style.backgroundColor ="";
-
-btn.style.backgroundColor ="green";
-window.buttonselected = btn;
-
+return  "<div id=fieldcontainer"+window.index+" ><label id='label_"+window.index+"' >Label "+window.index+"</label> <select id='select_"+window.index+"'  name='select_"+window.index+"'  >  <option value='val1'>val1</option></select><br /></div>";
 }
+
+return f;
+})();
+
+
+
+
+
 
 </script>
 <style>
+
+h2 {
+ text-align: center;
+  
+  }
+
 .center {
   margin: auto;
   width: 60%;
@@ -237,31 +426,97 @@ window.buttonselected = btn;
 }
 
 .html {
-  border: 3px solid #7321AD;
+   border: 3px solid #D4D3D3;
   padding: 10px;
 }
 
 
 
 button{
- width: 300px;
+ width: 100%;
+ text-align: center;
+}
+div#main{
+min-height:150px;
 }
 
+
+div#main div{
+min-height:40px;
+border-style: dotted;
+border-color:  #D8DBF7;
+}
+
+
+div#main table, div#main table *{
+min-height:40px;
+border-style: dotted;
+border-color:  #D0CCF7;
+}
+
+
+
+button{
+
+color: black;
+}
 </style>
-<div id="controls" class="controls" style="float:left;width:40%">
+<div>
+<p>Doble click para seleccionar un elemento del formulario,siempre y cuando no tenga un control seleccionado</p>
+</div>
+<div id="controls"   style="float:left;width:40%">
 
 
-<div class="center">
-<button id="table"  >Table</button><br />
-<button id="div"    >Div</button><br />
-<button id="input"  >input text</button><br />
+<div class="center"  style="width:80%">
+<h2>Controles</h2>
+
+<button id="table" class="togglecontrols" data-control="_table" >Tabla</button><br />
+<button id="div"   class="togglecontrols" data-control="_div" >Contenedor</button><br />
+<button id="input" class="togglecontrols" data-control="_inputtext" >Campo de texto</button><br />
+<button id="input" class="togglecontrols" data-control="_inputselect" >Campo de seleccion</button><br />
+
+<button id="cleanhtml" >Limpiar Html</button><br />
+
+
+<div id="htmledition"   style="width:100%;display:none" >
+<h2>Edicion del elemento seleccionado</h2>
+
+<div id="htmleditionfield"   style="width:100%;display:none" >
+
+</div>
+
+<div id="htmleditionlabel"   style="width:100%;display:none" >
+
+</div>
+
+<div id="htmleditioninput"   style="width:100%;display:none" >
+
+</div>
+
+<div id="htmleditionselect"   style="width:100%;display:none" >
+
+</div>
+
+<h4>html</h4>
+<textarea id="htmleditiontext"  style="width:100%;height:200px;" >
+
+</textarea>
+<br />
+<button id="htmleditionbtnsave" style="width:30%;" >Guardar</button>
+<button id="htmleditionbtncancel" style="width:30%;"  >Cancelar</button>
+<button id="htmleditionbtndelete" style="width:30%;"  >Borrar</button>
 </div>
 
 </div>
-<div id="html" class="controls html" style="float:left;width:40%">
-<div id="main">
 
+</div>
+<div style="float:left;width:58%" class="html" >
 
+<h2>Formulario</h2>
+
+<div id="html"  >
+
+<div id="main"  >
 
 <div   ><!-- onmouseenter="divover(this)" onmouseleave="divout(this)"-->
 div1
@@ -281,14 +536,11 @@ div2 sub div
 
 </div>
 
-</div>
 
 <div id="test2">
 lllll2
 <div id="test">
 lllll
-</div>
-
 </div>
 
 <div id="test3">
@@ -299,9 +551,16 @@ lllll
 
 </div>
 
+
 </div>
 
-<div class="controls" style="clear:both">
+
+</div>
+
+
+</div>
+</div>
+<div   style="clear:both">
 
 </div>
 
