@@ -1,0 +1,14 @@
+{
+
+  id:0,
+  FieldName:"Cedula", // lo que va en el label
+  FieldType:"text",
+  FieldValues:[{value:"1",text:"val1"},""],//array de strings
+  Description:"Documento del usuario",
+  RegularExpresion:"",
+  EntityField:"Cedula",
+  Min:"",
+  Max;"",
+  Mandatory:"",
+  
+}
