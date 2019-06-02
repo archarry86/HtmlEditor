@@ -8,6 +8,8 @@ var index = 0;
 
 var _click = 0;
 
+window.edttype = "1";
+
 window.buttonselected = null;
 
 window.myelement = null;
@@ -19,11 +21,27 @@ window.parentoedit = null;
 
 $(document).ready(function(){
 
+var firstedttype = $(".edttype").first();
+
+if(firstedttype.length > 0){
+firstedttype[0].checked = true;
+}
+
+$(".edttype").change(function(){
+var _this = this;
+window.edttype = $(this).val();
+$(".edttype").each(function(){
+ if(_this != this){
+	this.checked = false;
+ }
+});
+
+});
 
 $(document).keypress(function(e) {
   if(e.which == 127) {
     // enter pressed
-	debugger;
+	
 	if($(window.myelement).attr('id') != "main")
 	$(window.myelement).replaceWith( "");
   }
@@ -32,126 +50,68 @@ $(document).keypress(function(e) {
 
 window._html = $("#html")[0];
 
-//$('#html *').click(function(){
-//
-//if(this != window.myelement)
-//return;
-//
-//var target = $(this);
-//if(target.is( "div" )||target.is( "table" )){
-//
-//window.puthtml();
-//
-//} 
-
-
-//});
-
-
-
-//$('#html *').mouseenter(function(){
-////console.log('mouseneter '+index+" "+$(this).html());
-//window.divover($(this)[0]);
-//
-//}).mouseleave(function(){
-////console.log('mouseleave '+index+" "+$(this).html());
-//window.divout($(this)[0]);
-//
-//
-//});
-
-
-
-//$( "#html *" ).hover(
-//  function() {
-//  
-//  if(window.toedit != null)
-//  return;
-//  
-//   if(window.myelement != null  && _html != window.myelement )
-//   window.myelement.style.border   = "";
-//  
-//     window.myelement = this;
-//     window.myelement.style.border   = "thin  solid #FF0000";
-//	 
-//   //if(_html != $(window.myelement).parent()[0])
-//   //$(  window.myelement).parent()[0].style.border   = "";
-//   
-//   $(window.myelement).parents().each(function(){
-//    if(_html != this)
-//	this.style.border   = "";
-//   });
-// 
-//  }, function() {
-//  
-//  
-//  
-//    this.style.border   = "";//"thin  solid #FFFFFF";
-//	
-//	window.myelement =$(this).parent()[0];//
-//	
-//	if( _html != window.myelement )
-//	window.myelement.style.border   = "thin  solid #FF0000";
-//  }
-//);
-//
-//$( "#html *" ).dblclick(function() {
-//   if(window.toedit != null)
-//  return;
-// 
-//  if(window.myelement == null || window.buttonselected  != null  ||  this != window.myelement){
-//  return;
-//  }
-//  //debugger;
-//  
-//  window.toedit = $(window.myelement);
-//  window.myelement = null;
-//  window.toedit[0].style.border   = "thin  solid #0000FF";
-//  $( "#htmlcontrols").hide();
-//  $( "#htmledition" ).show();
-//   $("#htmleditiontext" ).val( window.toedit[0].outerHTML);
-//   
-//   $('#fieldedition').show();
-//  if(  window.toedit.is("table") ){
-//    $('#fieldedition').hide();
-//  console.log("table");
-//  } else if(  window.toedit.is("div") ){
-//
-//   console.log("div "+window.toEditisContainer() );
-//   if(window.toEditisContainer()){
-//    $('#htmleditionlabel').show();
-//	$('#htmleditioninput').show();
-//   }
-//   else{
-//       $('#fieldedition').hide();
-//   }
-//   
-//  }
-//  else if(  window.toedit.is("input") ){
-//  console.log("input" );
-//  	$('#htmleditioninput').show();
-//	$('#edtfiledtypetext').val("1");
-//  }
-//  else if(  window.toedit.is("select") ){
-//  console.log("select");
-//  	$('#htmleditioninput').show();
-//	
-//	$('#htmleditionselect').show();
-//	//SELECT ALL OPTIONS OF THE SELECT
-//	//$("#dictionaryofvalues").append("<tr class='dicrow'><td><input class='dicckey' type='text' value='"+this.value+"' ></input></td><td><input class='diccvalue' type='text' value='"+$(this).html()+"'></input></td><td><button onclick='deleterow(this)'>Eliminar</button></td></tr>");
-//
-//	
-//  
-//  }
-//  
-//});
-
 window.BindCoreFunctions("#html *");
 
 
 
+$( ".togglecontrols" ).mousedown(function(){
+ 
+ var val = window.edttype;
+ if(val !=3)
+ return ;
+
+ this.style.backgroundColor ="green";
+ window.buttonselected = this;
+ $(window.buttonselected).css("color","white");
+   
+ 
+});
+ 
+  
+ $( "#html" ).mouseup(function(){
+ 
+ var val = window.edttype;
+ if(val !=3 || window.buttonselected == null)
+ return ;
+ 
+ if(window.myelement != null){
+ 
+ 
+ var target = $(window.myelement);
+  if(target.is( "div" )||target.is( "table" )||target.is( "td" )){
+  
+  window.puthtml();
+ 
+ }
+ }
+ 
+ if(window.myelement != null){
+ window.myelement.style.backgroundColor ="";
+
+ }
+ 
+ if(window.buttonselected != null){
+ 
+  window.buttonselected.style.backgroundColor ="";
+  $(window.buttonselected).css("color","black");
+
+ }
+  window.myelement= null;
+  window.buttonselected = null;
+  window.toedit = null;
+
+ });
+
 
 $( ".togglecontrols" ).click(function(){
+ 
+ var val = window.edttype;
+ if(val == 3){
+ 
+
+  return;
+ }
+
  
 if(window.buttonselected != null){
 window.buttonselected.style.backgroundColor ="";
@@ -171,6 +131,9 @@ window.buttonselected = this;
 $(window.buttonselected).css("color","white");
 
 });
+
+
+
 
 
 $( "#htmleditionbtnsave" ).click(function() {
@@ -193,7 +156,7 @@ $( "#htmleditionbtnsave" ).click(function() {
    
     window.tout2=  window.setTimeout(function(){
     
-	debugger;
+	 
 	window.clearTimeout(window.tout2);
 	
 	
@@ -235,7 +198,19 @@ $( "#cleanhtml").click(function(){
 
 $( "#adddictionaryvalue").click(function(){
 
-$("#"+$( this).data("dictionary")).append("<tr class='dicrow'><td><input class='dicckey' type='text'></input></td><td><input class='diccvalue' type='text'></input></td><td><button onclick='deleterow(this)'>Eliminar</button></td></tr>");
+$("#"+$(this).data("dictionary")).append("<tr class='dicrow'><td><input class='dicckey' type='text'></input></td><td><input class='diccvalue' type='text'></input></td><td><button onclick='deleterow(this)'>Eliminar</button></td></tr>");
+
+});
+
+$( "#saveform").click(function(){
+
+console.log("HTML");
+console.log($("#html").html());
+console.log("FIELDS");
+$(_flieldsController.Fields).each(function(){
+console.log(this);
+});
+
 
 });
 
@@ -249,7 +224,7 @@ $(row).replaceWith("");
 }
 
 function chageInputType(){
-debugger;
+ 
   var x = document.getElementById("edtfiledtypetext").value;
   if(x == 3){
    // 
@@ -258,8 +233,6 @@ debugger;
    $('#edtfiledtypetext option').each(function(){
    
       console.log( this.value +" "+$(this).html());
-
-   
    });
    
   }
@@ -272,28 +245,31 @@ debugger;
   }
 }
 
-function toEditisContainer(){
+function toEditIdField(){
 
-var id = window.toedit.attr('id');
-return id!= undefined && id.indexOf('container')> -1;
+var id = window.toedit.is("div")? window.toedit.data('idfield') : window.toedit.parent("div").data('idfield'); 
+return id;
 }
 
-function deleteselectedelement(){ if(window.toedit.attr('id') == "main"){
-	
-	
+function IsEmpty(val){
+return val== undefined || val == "";
+}
+
+function deleteselectedelement(){ 
+
+	if(window.toedit.attr('id') == "main"){
 		 $("#main" ).html("");
 	}
-else 
-    window.toedit.replaceWith( "");
-    //window.toedit[0].style.border   = "";
-	
+	else 
+    window.toedit.replaceWith("");
+
     window.toedit = null;
 	window.myelement = null;
    $( "#htmledition" ).hide();
    $( "#htmlcontrols").show();
    $("#htmleditiontext" ).html("");
    
-   }
+}
 
 function puthtml(){
 
@@ -307,12 +283,13 @@ if(window.buttonselected == null)
 return; 
 
 var id = $(window.buttonselected).data("control");
+
 var jqobj = $(window.myelement);
-//debugger;
+ 
 
 window.index++;
 
-//debugger;
+ 
 
 var template = window[id];
 
@@ -321,8 +298,8 @@ if(template!= undefined ){
 jqobj.append(template.getHtmlBody());
 
 window.tout=  window.setTimeout(function(){
-//debugger;
-
+ 
+window.clearTimeout(tout);
 var aux = $('#html').html();
 $('#html').html(aux);
 	
@@ -349,6 +326,9 @@ function BindCoreFunctions(objecttobinbd){
 
 $(objecttobinbd).click(function(){
 
+var val = window.edttype;
+
+
   if(window.toedit != null)
   return;
 
@@ -359,6 +339,23 @@ var target = $(this);
 if(target.is( "div" )||target.is( "table" )||target.is( "td" )){
 
 window.puthtml();
+
+if(val == 2){
+
+if(window.myelement != null)
+window.myelement.style.border = "";
+
+if(window.buttonselected != null){
+ 
+  window.buttonselected.style.backgroundColor ="";
+  $(window.buttonselected).css("color","black");
+}
+
+window.buttonselected = null;
+window.myelement = null;
+window.toedit = null;
+}
+
 } 
 });
 //is table apply to all sub elements
@@ -398,69 +395,181 @@ $(objecttobinbd).hover(
 );
 
 $(objecttobinbd).dblclick(function() {
+
    if(window.toedit != null)
   return;
  
   if(window.myelement == null || window.buttonselected  != null  ||  this != window.myelement){
   return;
   }
-  //debugger;
+   
   
   window.toedit = $(window.myelement);
   window.myelement = null;
   window.toedit[0].style.border   = "thin  solid #0000FF";
+  
   $( "#htmlcontrols").hide();
   $( "#htmledition" ).show();
-   $("#htmleditiontext" ).val( window.toedit[0].outerHTML);
-   
-   $('#fieldedition').show();
-  if(  window.toedit.is("table") ){
-    $('#fieldedition').hide();
-  console.log("table");
-  } else if(  window.toedit.is("div") ){
+  
+  $("#htmleditiontext" ).val( window.toedit[0].outerHTML);
+  $('#fieldedition').show();
+  
+  $("#dictionaryofvalues tr.dicrow").each(function(){
+	$(this).remove();
+  });
 
-   console.log("div "+window.toEditisContainer() );
-   if(window.toEditisContainer()){
-    $('#htmleditionlabel').show();
-	$('#htmleditioninput').show();
-	
-	debugger;
-	var auxtypeinput = $(window.toedit).children().filter("select");
-	
-	if(auxtypeinput.length > 0){
-	  $('#edtfiledtypetext').val("3");
-	  $('#htmleditionselect').show();
-	}
-	else{
-	$('#edtfiledtypetext').val("1");
-	}
-	
-   }
-   else{
-       $('#fieldedition').hide();
-   }
-   
+  var fieldid = window.toEditIdField();
+  if(!IsEmpty(fieldid))
+  {
+
+       $( "#htmleditiontext" ).hide();
+		var field = _flieldsController.Fields[fieldid];
+		
+		$(".edtfield").each(function(){
+		   var fid = $(this).data("field");
+		   $(this).val(field[fid]);
+		});
+	 
+        $('#htmleditionlabel').show();
+      
+
+        var auxtypeinput =   !window.toedit.is("select")?  $(window.toedit).children().filter("select"): $(window.toedit[0]);
+        
+        //if(auxtypeinput.length > 0)
+		if(field.FieldValues.length > 0)
+		{
+          $('#htmleditionselect').show();
+		  
+		  	$(field.FieldValues).each(function(){
+	     	$("#dictionaryofvalues").append("<tr class='dicrow'><td><input class='dicckey' type='text' value='"+this.value+"' ></input></td><td><input class='diccvalue' type='text' value='"+this.text+"'></input></td><td><button onclick='deleterow(this)'>Eliminar</button></td></tr>");
+      
+	       });
+		  
+        }
+ 
   }
-  else if(  window.toedit.is("input") ){
-  console.log("input" );
-  	$('#htmleditioninput').show();
-	$('#edtfiledtypetext').val("1");
+  else if(  window.toedit.is("table") ){
+    $('#fieldedition').hide();
+
+  } 
+  else if(  window.toedit.is("div") ){
+    $('#fieldedition').hide();
+
+  } 
+  else if(  window.toedit.is("input")){
+       $('#fieldedition').hide();
   }
   else if(  window.toedit.is("select") ){
-  console.log("select");
+     $('#fieldedition').hide();
+    console.log("select");
   	$('#htmleditioninput').show();
-	
 	$('#htmleditionselect').show();
-	//SELECT ALL OPTIONS OF THE SELECT
-	//$("#dictionaryofvalues").append("<tr class='dicrow'><td><input class='dicckey' type='text' value='"+this.value+"' ></input></td><td><input class='diccvalue' type='text' value='"+$(this).html()+"'></input></td><td><button onclick='deleterow(this)'>Eliminar</button></td></tr>");
 
+	var options = window.toedit.children("option").each(function(){
+		$("#dictionaryofvalues").append("<tr class='dicrow'><td><input class='dicckey' type='text' value='"+this.value+"' ></input></td><td><input class='diccvalue' type='text' value='"+$(this).html()+"'></input></td><td><button onclick='deleterow(this)'>Eliminar</button></td></tr>");
+
+	});
 	
-  
+	//SELECT ALL OPTIONS OF THE SELECT
+
   }
   
 });
 
+
+$("#htmlfieldsave").click(function(){
+
+
+
+  var fieldid = window.toEditIdField();
+
+  var field = _flieldsController.Fields[fieldid];
+
+   $(".edtfield").each(function(){
+		   var fid = $(this).data("field");
+		   
+		   field[fid] =  $(this).val();
+		   
+	});
+   var _values=[];
+   
+   var _dicinputs = $("#dictionaryofvalues tr.dicrow td input");
+   
+   for(i = 0;i<_dicinputs.length;i+=2){
+ 
+    _values.push(
+	   {
+	    value : $(_dicinputs[i]).val(),
+	    text  : $(_dicinputs[i+1]).val()
+	   }
+	   );
+   }
+  
+   field.FieldValues = _values;
+	 
+   var template = window[field.FieldTemplate];
+
+   var newhtml =  template.SetHtmlBody(field);
+
+   window.toedit.replaceWith(newhtml);
+   
+    window.toedit = null;
+	window.myelement = null;
+   $( "#htmledition" ).hide();
+   $( "#htmlcontrols").show();
+   
+   window.tout=  window.setTimeout(function(){
+ 
+    window.clearTimeout(tout);
+    var aux = $('#html').html();
+    $('#html').html(aux);
+
+    BindCoreFunctions('#html *');
+    
+    },300 );
+       
+})
+ 
 }
+
+var _flieldsController =(function(){
+
+var index = 0;
+
+var f= {};
+
+f.Fields ={};
+
+f.NewField = function(template,_type = "1"){
+index++;
+var _idfiled = ""+index;
+f.Fields[_idfiled] ={
+
+  idfield:index,
+  FieldName:"label "+window.index, // lo que va en el label
+  FieldType:_type,
+  FieldValues:[],//array de strings
+  Description:"",
+  RegularExpresion:"",
+  EntityField:"input_"+window.index,
+  Min:"",
+  Max:"",
+  Mandatory:"",
+  FormFieldid:window.index,
+  FieldTemplate:template,
+  RequiredValue :function(){
+  
+  return ( this.Mandatory != undefined && this.Mandatory != "" &&  this.Mandatory == true)?"required":"";
+}
+};
+
+
+return f.Fields[_idfiled];
+
+}
+
+return f;
+})()
 
 
 var _div =(function()
@@ -490,12 +599,31 @@ return f;
 
 var _inputtext =(function()
 {
+
 var f = {};
+
+var type ="1";
+
+var template = "_inputtext";
 
 f.getHtmlBody= function(){
 
-return "<div id=fieldcontainer"+window.index+"><label id='label_"+window.index+"' >Label "+window.index+"</label> <input  id='input_"+window.index+"' type='text' name='input_"+window.index+"'  required       minlength='0' maxlength='8' size='10'> <br /></div>";
+var field = window._flieldsController.NewField(template,type);
+
+var required = field.RequiredValue();
+ 
+return "<div id='fieldcontainer"+field.FormFieldid+"' data-idfield='"+field.idfield+"'><label id='label_"+field.FormFieldid+"' class='namefield' >"+field.FieldName+"</label> <input  id='input_"+field.FormFieldid+"' type='text' name='"+field.EntityField+"' "+required+"   minlength='"+field.Min+"' maxlength='"+field.Max+"'  > <br /></div>";
 }
+
+f.SetHtmlBody= function(field){
+
+//var field  = window._flieldsController.Fields[idfield];
+
+var required = field.RequiredValue();
+ 
+return "<div id='fieldcontainer"+field.FormFieldid+"' data-idfield='"+field.idfield+"'><label id='label_"+field.FormFieldid+"' class='namefield' >"+field.FieldName+"</label> <input  id='input_"+field.FormFieldid+"' type='text' name='"+field.EntityField+"' "+required+"   minlength='"+field.Min+"' maxlength='"+field.Max+"'  > <br /></div>";
+}
+
 
 return f;
 })();
@@ -503,12 +631,41 @@ return f;
 
 var _inputselect =(function()
 {
+
+var type ="3";
+
+var template = "_inputselect";
+
 var f = {};
 
 f.getHtmlBody= function(){
 
-return  "<div id=fieldcontainer"+window.index+" ><label id='label_"+window.index+"' >Label "+window.index+"</label> <select id='select_"+window.index+"'  name='select_"+window.index+"'  >  <option value='val1'>val1</option></select><br /></div>";
+
+var field = window._flieldsController.NewField(template,type);
+
+field.FieldValues = [{value:"val1",text:"val1"}];
+
+var required = field.RequiredValue();
+
+
+return  "<div id='fieldcontainer"+field.FormFieldid+"'  data-idfield='"+field.idfield+"'  ><label id='label_"+field.FormFieldid+"' class='namefield'  >"+field.FieldName+"</label> <select id='select_"+field.FormFieldid+"'  name='"+field.EntityField+"'  >  <option value='val1'>val1</option></select><br /></div>";
 }
+
+f.SetHtmlBody= function(field){
+
+
+var required = field.RequiredValue();
+
+var select ="<select id='select_"+field.FormFieldid+"'>";
+
+$(field.FieldValues).each(function(){
+ select+="<option value='"+this.value+"'>"+this.text+"</option>";
+});
+
+ select+="</select>";
+ 
+return  "<div id='fieldcontainer"+window.index+"'  data-idfield='"+field.idfield+"'  ><label id='label_"+field.FormFieldid+"' class='namefield'  >"+field.FieldName+"</label>"+select+"<br /></div>";}
+
 
 return f;
 })();
@@ -617,14 +774,22 @@ border-width: thin;
 }
 
 </style>
-<div>
-<p>Doble click para seleccionar un elemento del formulario,siempre y cuando no tenga un control seleccionado</p>
-</div>
+
 <div id="controls"   style="float:left;width:40%">
 
 
 <div   class="center"  style="width:80%">
 <div id="htmlcontrols" >
+
+<label>
+    <input type="radio"  class="edttype" value="1"  />Mantener Selecion
+</label>
+<label>
+    <input type="radio"  class="edttype" value="2"/>Selecionar y Poner
+</label>
+<label>
+    <input type="radio"  class="edttype" value="3"/>Arrastar y Soltar
+</label>
 
 
 <h2>Controles</h2>
@@ -646,10 +811,18 @@ border-width: thin;
 <table>
 	<tr>
 		<td class="label">
-			<label id="edtfiledname" >Nombre del campo</label>
+			<label id="edtfiledname" >Label del campo</label>
 		</td>
 		<td>
 			<input id="edtfiledtext" class="edtfield" data-field="FieldName" ></input>
+		</td>
+	</tr>
+		<tr>
+		<td class="label">
+			<label id="edtfiledname" >Html name del campo</label>
+		</td>
+		<td>
+			<input id="edtfiledtext" class="edtfield" data-field="EntityField" ></input>
 		</td>
 	</tr>
 	<tr>
@@ -692,29 +865,22 @@ border-width: thin;
 			<input id="edtfiledmandatory" class="edtfield" data-field="Mandatory" type="checkbox" ></input>
 		</td>
 	</tr>
+	<tr>
+		<td class="label">
+			<label id="edtfiledtype" >Tipo de campo</label>
+		</td>
+		<td>
+			<select id="edtfiledtypetext" class="edtfield" data-field="FieldType" onchange="chageInputType()" >
+			<option value='1'>text</option>
+			<option value='2'>number</option>
+			<option value='3'>select</option>
+			</select>
+		</td>
+	</tr>
 </table>
 
 </div>
 
-<div id="htmleditioninput"  class="fieldeditioncontainer" style="display:none"  >
-<table>
-<tr>
-<td class="label">
-<label id="edtfiledtype" >Tipo de campo</label>
-</td>
-<td>
-<select id="edtfiledtypetext" class="edtfield" data-field="FieldType" onchange="chageInputType()" >
-<option value='1'>text</option>
-<option value='2'>number</option>
-<option value='3'>select</option>
-</select>
-</td>
-</tr>
-</table>
-
-
-
-</div>
 
 <div id="htmleditionselect" class="fieldeditioncontainer" style="display:none"  >
 <table id="dictionaryofvalues" class="dictionary" >
@@ -779,6 +945,11 @@ Valor
 <div style="float:left;width:58%" class="html" >
 
 <h2>Formulario</h2>
+
+<p>Doble click para seleccionar un elemento del formulario,siempre y cuando no tenga un control seleccionado</p>
+
+<button id="saveform" style="width:100px" >Guardar</button>
+<br />
 
 <div id="html"  >
 
