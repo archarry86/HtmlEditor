@@ -10,5 +10,7 @@
   Min:"",
   Max;"",
   Mandatory:"",
+  FormFieldid:window.index,
+  FieldTemplate:template,
   
 }
